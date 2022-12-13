@@ -1,0 +1,27 @@
+[
+    {
+      "name": "Soproni világos",
+      "tagline": "Magyarország legjobb söre",
+      "abv": 3.2
+    },
+    {
+      "name": "Guinness",
+      "tagline": "A legjobb sör a világon",
+      "abv": 4.1
+    },
+    {
+      "name": "Kőbányai classic",
+      "tagline": "Sör ha nincs pénzed",
+      "abv": 3.8
+    },
+    {
+      "name": "Dreher",
+      "tagline": "Bulikon ilyen sör mindig van",
+      "abv": 3.7
+    },
+    {
+      "name": "Rákóczi, a szabadság íze",
+      "tagline": "Valaki lehet issza ezt",
+      "abv": 4.2
+    }
+  ]

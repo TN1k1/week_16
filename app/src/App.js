@@ -1,53 +1,84 @@
-import React, {useEffect, useState} from "react";
-import './App.css';
+import { useEffect, useState } from "react";
+import "./App.css";
 import Beers from "./components/Beers";
 import LoadingMask from "./components/LoadingMask";
 
 function App() {
-  const[beers, setBeers] = useState([]);
-  const [perPage, setPerPage] =useState(10);
-  const [filter, setFilter] =useState("");
-  const [sortBy, setSortBy] =useState("asc");
+    const [beers, setBeers] = useState([]);
+    const [name, setName] = useState("");
+    const [tagline, setTagline] = useState("");
+    const [abv, setAbv] = useState(0);
 
-  useEffect(() => {
-    fetch(`https://api.punkapi.com/v2/beers?per_page=${perPage}`)
-    .then((res) => res.json())
-    .then((data)=> {
-      setTimeout(()=>{
-      setBeers(data)
-      }, 2000);
-    });
-  },[perPage]);
+    const fetchBeers = () => {
+        fetch("/beers")
+            .then((res) => res.json())
+            .then((data) => setBeers(data));
+    };
 
-  useEffect(() => {
-    sortBy === "asc"
-      ? setBeers([...beers].sort((a, b) => a.name > b.name ? 1 : -1)
-        )
-      : setBeers([...beers].sort((a, b) => a.name < b.name ? 1 : -1)
-        );
-  }, [sortBy])
+    const addBeer = () => {
+        fetch("/beers/add", {
+            method: "POST",
+            body: JSON.stringify({
+                name: name,
+                tagline: tagline,
+                abv: abv,
+            }),
+            headers: { "Content-Type": "application/json" }
+        })
+        .then((res)=> res.json())
+        .then((data)=> {
+            console.log(data)
+            fetchBeers();
+        })
+    };
 
-  console.log(beers);
+    useEffect(()=> fetchBeers(), [])
+    
 
-  return (
-    <div className="App">
-      <input type="number" value={perPage}
-      onChange={(event) => {
-        setPerPage(event.target.value);
-      }}
-      />;
+    return (
+        <div className="App">
+            {beers.length > 0 ? (
+                <>
+                    <input
+                        type="text"
+                        placeholder="name"
+                        value={name}
+                        onChange={(event) => {
+                            setName(event.target.value);
+                        }}
+                    />
 
-      <p>filter:</p>
-      <input type="text" placeholder="filter" value={filter} onChange={(event)=>{setFilter(event.target.value)}} />
+                    <input
+                        type="text"
+                        placeholder="tagline"
+                        value={tagline}
+                        onChange={(event) => {
+                            setTagline(event.target.value);
+                        }}
+                    />
 
-      <button onClick={()=>{
-        sortBy === "asc" ? setSortBy("desc") : setSortBy("asc");
-      }}>Sort by {sortBy}</button>
+                    <input
+                        type="number"
+                        placeholder="abv"
+                        value={abv}
+                        onChange={(event) => {
+                            setAbv(event.target.value);
+                        }}
+                    />
 
-
-      {beers.length > 0 ? <Beers beers={beers} filter={filter}/> : <LoadingMask />}
-    </div>
-  );
+                    <button
+                        onClick={() => {
+                            addBeer();
+                        }}
+                    >
+                        Add
+                    </button>
+                    <Beers beers={beers} />
+                </>
+            ) : (
+                <LoadingMask />
+            )}
+        </div>
+    );
 }
-
 export default App;
